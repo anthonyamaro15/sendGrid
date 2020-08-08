@@ -6,18 +6,7 @@ const obj = {
   description: "here is an example of the data im gonna be sending to you",
 };
 
-let html = `
-   <!DOCTYPE html>
-   <html>
-      <body>
-         <h1>${obj.heading} </h1>
-         <a href="default.asp"></a>
-         <p>${obj.description}</p>
-      </body>
-   </html>
-`;
-
-const callMethod = () => {
+const callMethod = (email, token) => {
   axios({
     method: "POST",
     url: "https://api.sendgrid.com/v3/mail/send",
@@ -30,7 +19,7 @@ const callMethod = () => {
         {
           to: [
             {
-              email: process.env.TO,
+              email: email,
               name: "testing",
             },
           ],
@@ -41,7 +30,21 @@ const callMethod = () => {
         email: process.env.SENDER,
         name: "anthony",
       },
-      content: [{ type: "text/html", value: html }],
+      content: [
+        {
+          type: "text/html",
+          value: `
+   <!DOCTYPE html>
+   <html>
+      <body>
+         <h1>${obj.heading} </h1>
+         <a href="localhost:4000/register/${token}">click here ${token}</a>
+         <p>${obj.description}</p>
+      </body>
+   </html>
+`,
+        },
+      ],
     },
   })
     .then((res) => {
